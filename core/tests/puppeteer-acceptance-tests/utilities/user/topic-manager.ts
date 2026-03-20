@@ -4609,12 +4609,35 @@ export class TopicManager extends BaseUser {
       await this.page.waitForFunction(
         (selector: string) => {
           const btn = document.querySelector(selector) as HTMLButtonElement;
-          return btn && !btn.disabled && btn.offsetParent !== null;
+          return btn && !btn.disabled;
         },
-        {timeout: 15000},
+        {timeout: 15000}, // validation is fast, 15s is enough
         publishChapterButton
       );
-      await this.clickOnElementWithSelector(publishChapterButton);
+
+      // Click directly — no IPC gap, no internal disabled re-check.
+
+      const btn = await this.page.$(publishChapterButton);
+      await btn!.click();
+
+      // Wait for publish HTTP call to complete.
+      // Button stays disabled during PUT /story_publish_handler.
+      // On loaded CI this can take much longer than 30s default.
+      // await this.page.waitForFunction(
+      //   (selector: string) => {
+      //     const btn = document.querySelector(selector) as HTMLButtonElement;
+      //     return btn && !btn.disabled;
+      //   },
+      //   {timeout: 60000}, // generous for slow CI
+      //   publishChapterButton
+      // );
+      await this.page.waitForResponse(
+        res =>
+          res.url().includes('/story_editor_handler/data/') &&
+          res.request().method() === 'PUT' &&
+          res.status() === 200,
+        {timeout: 60000}
+      );
     }
   }
 
