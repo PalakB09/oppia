@@ -3110,15 +3110,15 @@ export class TopicManager extends BaseUser {
    */
   async openStoryEditor(storyName: string, topicName?: string): Promise<void> {
     // If topic name is given, navigate to topic.
-    this.page.on('console', msg => {
-      if (
-        msg.text().includes('[BUTTON-WATCH]') ||
-        msg.text().includes('[DEBUG]') ||
-        msg.text().includes('[debug]')
-      ) {
-        console.log(`[BROWSER ${msg.type().toUpperCase()}] ${msg.text()}`);
-      }
-    });
+    // this.page.on('console', msg => {
+    //   if (
+    //     msg.text().includes('[BUTTON-WATCH]') ||
+    //     msg.text().includes('[DEBUG]') ||
+    //     msg.text().includes('[debug]')
+    //   ) {
+    //     console.log(`[BROWSER ${msg.type().toUpperCase()}] ${msg.text()}`);
+    //   }
+    // });
     if (topicName) {
       await this.openTopicEditor(topicName);
     }
@@ -4557,54 +4557,54 @@ export class TopicManager extends BaseUser {
     } else {
       // await this.waitForElementToBeClickable(publishChapterButton);
       // await this.clickOnElementWithSelector(publishChapterButton);
-      const buttonDiagnostic = await this.page.evaluate((selector: string) => {
-        const btn = document.querySelector(selector) as HTMLButtonElement;
-        if (!btn) return {found: false};
+      // const buttonDiagnostic = await this.page.evaluate((selector: string) => {
+      //   const btn = document.querySelector(selector) as HTMLButtonElement;
+      //   if (!btn) return {found: false};
 
-        // Walk up the Angular component tree via __ngContext__
-        const ngContext = (btn as any).__ngContext__;
+      //   // Walk up the Angular component tree via __ngContext__
+      //   const ngContext = (btn as any).__ngContext__;
 
-        return {
-          found: true,
-          disabled: btn.disabled,
-          disabledAttr: btn.getAttribute('disabled'),
-          classList: Array.from(btn.classList),
-          textContent: btn.textContent?.trim(),
-          // Read Angular bound expressions directly
-          ngModelValue:
-            ngContext?.[0]?.selectedChapterIndexInPublishUptoDropdown,
-          // Check both disable conditions from template
-          changeListLength:
-            document
-              .querySelector('.oppia-changes-count')
-              ?.textContent?.trim() ?? '0',
-          // Is save button enabled? (proxy for changeListLength > 0)
-          saveButtonDisabled: (
-            document.querySelector(
-              '.e2e-test-save-story-button'
-            ) as HTMLButtonElement
-          )?.disabled,
-          // Is the dropdown at expected value?
-          dropdownValue: (
-            document.querySelector(
-              'select.e2e-test-publish-up-to-chapter-dropdown'
-            ) as HTMLSelectElement
-          )?.value,
-          // All buttons and their disabled state on page
-          allButtons: Array.from(document.querySelectorAll('button')).map(
-            b => ({
-              text: b.textContent?.trim().slice(0, 30),
-              disabled: b.disabled,
-              classes: b.className.slice(0, 60),
-            })
-          ),
-        };
-      }, publishChapterButton);
+      //   return {
+      //     found: true,
+      //     disabled: btn.disabled,
+      //     disabledAttr: btn.getAttribute('disabled'),
+      //     classList: Array.from(btn.classList),
+      //     textContent: btn.textContent?.trim(),
+      //     // Read Angular bound expressions directly
+      //     ngModelValue:
+      //       ngContext?.[0]?.selectedChapterIndexInPublishUptoDropdown,
+      //     // Check both disable conditions from template
+      //     changeListLength:
+      //       document
+      //         .querySelector('.oppia-changes-count')
+      //         ?.textContent?.trim() ?? '0',
+      //     // Is save button enabled? (proxy for changeListLength > 0)
+      //     saveButtonDisabled: (
+      //       document.querySelector(
+      //         '.e2e-test-save-story-button'
+      //       ) as HTMLButtonElement
+      //     )?.disabled,
+      //     // Is the dropdown at expected value?
+      //     dropdownValue: (
+      //       document.querySelector(
+      //         'select.e2e-test-publish-up-to-chapter-dropdown'
+      //       ) as HTMLSelectElement
+      //     )?.value,
+      //     // All buttons and their disabled state on page
+      //     allButtons: Array.from(document.querySelectorAll('button')).map(
+      //       b => ({
+      //         text: b.textContent?.trim().slice(0, 30),
+      //         disabled: b.disabled,
+      //         classes: b.className.slice(0, 60),
+      //       })
+      //     ),
+      //   };
+      // }, publishChapterButton);
 
-      console.log(
-        '[DEBUG] Button state before publish click:',
-        JSON.stringify(buttonDiagnostic, null, 2)
-      );
+      // console.log(
+      //   '[DEBUG] Button state before publish click:',
+      //   JSON.stringify(buttonDiagnostic, null, 2)
+      // );
 
       await this.page.waitForFunction(
         (selector: string) => {
@@ -4614,8 +4614,6 @@ export class TopicManager extends BaseUser {
         {timeout: 15000}, // validation is fast, 15s is enough
         publishChapterButton
       );
-
-      // Click directly — no IPC gap, no internal disabled re-check.
 
       const btn = await this.page.$(publishChapterButton);
       await btn!.click();
@@ -4641,227 +4639,227 @@ export class TopicManager extends BaseUser {
     }
   }
 
-  async watchPublishButtonState(): Promise<void> {
-    await this.page.evaluate((selector: string) => {
-      const btn = document.querySelector(selector) as HTMLButtonElement;
-      if (!btn) return;
+  // async watchPublishButtonState(): Promise<void> {
+  //   await this.page.evaluate((selector: string) => {
+  //     const btn = document.querySelector(selector) as HTMLButtonElement;
+  //     if (!btn) return;
 
-      // Log initial state
-      console.log(
-        `[BUTTON-WATCH] Initial state: disabled=${btn.disabled} ` +
-          `at ${new Date().toISOString()}`
-      );
+  //     // Log initial state
+  //     console.log(
+  //       `[BUTTON-WATCH] Initial state: disabled=${btn.disabled} ` +
+  //         `at ${new Date().toISOString()}`
+  //     );
 
-      // Watch for ANY attribute change on the button
-      const observer = new MutationObserver(mutations => {
-        mutations.forEach(m => {
-          console.log(
-            `[BUTTON-WATCH] Mutation: ${m.attributeName} changed ` +
-              `to disabled=${btn.disabled} ` +
-              `at ${new Date().toISOString()} ` +
-              `oldValue=${m.oldValue}`
-          );
-        });
-      });
+  //     // Watch for ANY attribute change on the button
+  //     const observer = new MutationObserver(mutations => {
+  //       mutations.forEach(m => {
+  //         console.log(
+  //           `[BUTTON-WATCH] Mutation: ${m.attributeName} changed ` +
+  //             `to disabled=${btn.disabled} ` +
+  //             `at ${new Date().toISOString()} ` +
+  //             `oldValue=${m.oldValue}`
+  //         );
+  //       });
+  //     });
 
-      observer.observe(btn, {
-        attributes: true,
-        attributeOldValue: true,
-        attributeFilter: ['disabled', 'class'],
-      });
+  //     observer.observe(btn, {
+  //       attributes: true,
+  //       attributeOldValue: true,
+  //       attributeFilter: ['disabled', 'class'],
+  //     });
 
-      // Also watch the dropdown to correlate
-      const dropdown = document.querySelector(
-        'select.e2e-test-publish-up-to-chapter-dropdown'
-      ) as HTMLSelectElement;
-      if (dropdown) {
-        dropdown.addEventListener('change', () => {
-          console.log(
-            `[BUTTON-WATCH] Dropdown changed to value=${dropdown.value} ` +
-              `at ${new Date().toISOString()} ` +
-              `button.disabled=${btn.disabled}`
-          );
-        });
-      }
+  //     // Also watch the dropdown to correlate
+  //     const dropdown = document.querySelector(
+  //       'select.e2e-test-publish-up-to-chapter-dropdown'
+  //     ) as HTMLSelectElement;
+  //     if (dropdown) {
+  //       dropdown.addEventListener('change', () => {
+  //         console.log(
+  //           `[BUTTON-WATCH] Dropdown changed to value=${dropdown.value} ` +
+  //             `at ${new Date().toISOString()} ` +
+  //             `button.disabled=${btn.disabled}`
+  //         );
+  //       });
+  //     }
 
-      // Store observer to disconnect later
-      (window as any).__buttonObserver = observer;
-    }, publishChapterButton);
-  }
+  //     // Store observer to disconnect later
+  //     (window as any).__buttonObserver = observer;
+  //   }, publishChapterButton);
+  // }
 
-  async stopWatchingPublishButtonState(): Promise<void> {
-    await this.page.evaluate(() => {
-      (window as any).__buttonObserver?.disconnect();
-    });
-  }
+  // async stopWatchingPublishButtonState(): Promise<void> {
+  //   await this.page.evaluate(() => {
+  //     (window as any).__buttonObserver?.disconnect();
+  //   });
+  // }
 
-  async dumpAngularComponentState(): Promise<void> {
-    const state = await this.page.evaluate(() => {
-      // Find the story editor navbar component
-      const el =
-        document.querySelector('story-editor-navbar') ??
-        document.querySelector('[class*="story-editor"]');
-      if (!el) return {error: 'Component element not found'};
+  // async dumpAngularComponentState(): Promise<void> {
+  //   const state = await this.page.evaluate(() => {
+  //     // Find the story editor navbar component
+  //     const el =
+  //       document.querySelector('story-editor-navbar') ??
+  //       document.querySelector('[class*="story-editor"]');
+  //     if (!el) return {error: 'Component element not found'};
 
-      // Access Angular component instance via __ngContext__
-      // Works for Angular Ivy (v9+)
-      const getAngularComponent = (element: Element): any => {
-        const ctx = (element as any).__ngContext__;
-        if (!ctx) return null;
-        // ctx is a LView array; component instance is at index 8
-        return ctx[8] ?? ctx;
-      };
+  //     // Access Angular component instance via __ngContext__
+  //     // Works for Angular Ivy (v9+)
+  //     const getAngularComponent = (element: Element): any => {
+  //       const ctx = (element as any).__ngContext__;
+  //       if (!ctx) return null;
+  //       // ctx is a LView array; component instance is at index 8
+  //       return ctx[8] ?? ctx;
+  //     };
 
-      const component = getAngularComponent(el);
-      if (!component) return {error: 'Angular context not found'};
+  //     const component = getAngularComponent(el);
+  //     if (!component) return {error: 'Angular context not found'};
 
-      return {
-        isPublishButtonDisabled: component.isPublishButtonDisabled?.(),
-        getChangeListLength: component.getChangeListLength?.(),
-        isChapterStatusBeingChanged: component.isChapterStatusBeingChanged?.(),
-        isStorySaveable: component.isStorySaveable?.(),
-        selectedChapterIndex:
-          component.selectedChapterIndexInPublishUptoDropdown,
-        areChaptersBeingPublished: component.areChaptersBeingPublished?.(),
-        chapterIsPublishable: component.chapterIsPublishable,
-      };
-    });
+  //     return {
+  //       isPublishButtonDisabled: component.isPublishButtonDisabled?.(),
+  //       getChangeListLength: component.getChangeListLength?.(),
+  //       isChapterStatusBeingChanged: component.isChapterStatusBeingChanged?.(),
+  //       isStorySaveable: component.isStorySaveable?.(),
+  //       selectedChapterIndex:
+  //         component.selectedChapterIndexInPublishUptoDropdown,
+  //       areChaptersBeingPublished: component.areChaptersBeingPublished?.(),
+  //       chapterIsPublishable: component.chapterIsPublishable,
+  //     };
+  //   });
 
-    console.log(
-      '[DEBUG] Angular component state:',
-      JSON.stringify(state, null, 2)
-    );
-  }
+  //   console.log(
+  //     '[DEBUG] Angular component state:',
+  //     JSON.stringify(state, null, 2)
+  //   );
+  // }
 
-  async highlightElementState(selector: string): Promise<void> {
-    await this.page.evaluate((sel: string) => {
-      const el = document.querySelector(sel) as HTMLElement;
-      if (!el) return;
-      // Green = enabled, Red = disabled
-      const btn = el as HTMLButtonElement;
-      btn.style.outline = btn.disabled ? '4px solid red' : '4px solid green';
-      btn.style.outlineOffset = '2px';
-      // Add a visible label
-      const label = document.createElement('div');
-      label.style.cssText = `
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      background: ${btn.disabled ? 'red' : 'green'};
-      color: white;
-      padding: 8px 16px;
-      font-size: 16px;
-      z-index: 99999;
-      border-radius: 4px;
-    `;
-      label.textContent = `Publish btn: ${btn.disabled ? 'DISABLED' : 'ENABLED'}`;
-      label.id = 'debug-label';
-      document.body.appendChild(label);
-    }, selector);
+  // async highlightElementState(selector: string): Promise<void> {
+  //   await this.page.evaluate((sel: string) => {
+  //     const el = document.querySelector(sel) as HTMLElement;
+  //     if (!el) return;
+  //     // Green = enabled, Red = disabled
+  //     const btn = el as HTMLButtonElement;
+  //     btn.style.outline = btn.disabled ? '4px solid red' : '4px solid green';
+  //     btn.style.outlineOffset = '2px';
+  //     // Add a visible label
+  //     const label = document.createElement('div');
+  //     label.style.cssText = `
+  //     position: fixed;
+  //     top: 10px;
+  //     right: 10px;
+  //     background: ${btn.disabled ? 'red' : 'green'};
+  //     color: white;
+  //     padding: 8px 16px;
+  //     font-size: 16px;
+  //     z-index: 99999;
+  //     border-radius: 4px;
+  //   `;
+  //     label.textContent = `Publish btn: ${btn.disabled ? 'DISABLED' : 'ENABLED'}`;
+  //     label.id = 'debug-label';
+  //     document.body.appendChild(label);
+  //   }, selector);
 
-    // Take screenshot with visual state visible
-    await this.page.screenshot({
-      path: `debug-button-state-${Date.now()}.png`,
-      fullPage: false,
-    });
+  //   // Take screenshot with visual state visible
+  //   await this.page.screenshot({
+  //     path: `debug-button-state-${Date.now()}.png`,
+  //     fullPage: false,
+  //   });
 
-    // Clean up
-    await this.page.evaluate(() => {
-      document.getElementById('debug-label')?.remove();
-    });
-  }
-  async pollButtonStateForSeconds(
-    selector: string,
-    durationMs: number = 5000
-  ): Promise<void> {
-    const start = Date.now();
-    const states: object[] = [];
+  //   // Clean up
+  //   await this.page.evaluate(() => {
+  //     document.getElementById('debug-label')?.remove();
+  //   });
+  // }
+  // async pollButtonStateForSeconds(
+  //   selector: string,
+  //   durationMs: number = 5000
+  // ): Promise<void> {
+  //   const start = Date.now();
+  //   const states: object[] = [];
 
-    while (Date.now() - start < durationMs) {
-      const state = await this.page.evaluate((sel: string) => {
-        const btn = document.querySelector(sel) as HTMLButtonElement;
-        const dropdown = document.querySelector(
-          'select.e2e-test-publish-up-to-chapter-dropdown'
-        ) as HTMLSelectElement;
-        return {
-          t: Date.now(),
-          btnDisabled: btn?.disabled,
-          dropdownValue: dropdown?.value,
-          saveDisabled: (
-            document.querySelector(
-              '.e2e-test-save-story-button'
-            ) as HTMLButtonElement
-          )?.disabled,
-        };
-      }, selector);
+  //   while (Date.now() - start < durationMs) {
+  //     const state = await this.page.evaluate((sel: string) => {
+  //       const btn = document.querySelector(sel) as HTMLButtonElement;
+  //       const dropdown = document.querySelector(
+  //         'select.e2e-test-publish-up-to-chapter-dropdown'
+  //       ) as HTMLSelectElement;
+  //       return {
+  //         t: Date.now(),
+  //         btnDisabled: btn?.disabled,
+  //         dropdownValue: dropdown?.value,
+  //         saveDisabled: (
+  //           document.querySelector(
+  //             '.e2e-test-save-story-button'
+  //           ) as HTMLButtonElement
+  //         )?.disabled,
+  //       };
+  //     }, selector);
 
-      states.push(state);
-      await new Promise(r => setTimeout(r, 200)); // poll every 200ms
-    }
+  //     states.push(state);
+  //     await new Promise(r => setTimeout(r, 200)); // poll every 200ms
+  //   }
 
-    // Print state transitions only
-    const transitions = states.filter(
-      (s: any, i) =>
-        i === 0 || (states[i - 1] as any).btnDisabled !== s.btnDisabled
-    );
-    console.log(
-      '[DEBUG] Button state transitions:',
-      JSON.stringify(transitions, null, 2)
-    );
-  }
+  //   // Print state transitions only
+  //   const transitions = states.filter(
+  //     (s: any, i) =>
+  //       i === 0 || (states[i - 1] as any).btnDisabled !== s.btnDisabled
+  //   );
+  //   console.log(
+  //     '[DEBUG] Button state transitions:',
+  //     JSON.stringify(transitions, null, 2)
+  //   );
+  // }
   async publishChapter(
     storyName: string,
     topicName: string,
     dropdownValue: string
   ): Promise<void> {
     await this.openStoryEditor(storyName, topicName);
-    await this.watchPublishButtonState();
+    // await this.watchPublishButtonState();
     // await this.publishStoryDraftChapterUpto(dropdownValue);
     // await this.publishStoryDraftSerialChapter();
-    const networkLog: object[] = [];
-    const requestHandler = (req: any) => {
-      if (
-        req.url().includes('validate_story') ||
-        req.url().includes('story_editor') ||
-        req.url().includes('chapter')
-      ) {
-        networkLog.push({
-          type: 'REQUEST',
-          time: Date.now(),
-          url: req.url(),
-          method: req.method(),
-        });
-      }
-    };
-    const responseHandler = (res: any) => {
-      if (
-        res.url().includes('validate_story') ||
-        res.url().includes('story_editor') ||
-        res.url().includes('chapter')
-      ) {
-        networkLog.push({
-          type: 'RESPONSE',
-          time: Date.now(),
-          url: res.url(),
-          status: res.status(),
-        });
-      }
-    };
+    // const networkLog: object[] = [];
+    // const requestHandler = (req: any) => {
+    //   if (
+    //     req.url().includes('validate_story') ||
+    //     req.url().includes('story_editor') ||
+    //     req.url().includes('chapter')
+    //   ) {
+    //     networkLog.push({
+    //       type: 'REQUEST',
+    //       time: Date.now(),
+    //       url: req.url(),
+    //       method: req.method(),
+    //     });
+    //   }
+    // };
+    // const responseHandler = (res: any) => {
+    //   if (
+    //     res.url().includes('validate_story') ||
+    //     res.url().includes('story_editor') ||
+    //     res.url().includes('chapter')
+    //   ) {
+    //     networkLog.push({
+    //       type: 'RESPONSE',
+    //       time: Date.now(),
+    //       url: res.url(),
+    //       status: res.status(),
+    //     });
+    //   }
+    // };
 
-    this.page.on('request', requestHandler);
-    this.page.on('response', responseHandler);
-    await this.dumpAngularComponentState();
+    // this.page.on('request', requestHandler);
+    // this.page.on('response', responseHandler);
+    // await this.dumpAngularComponentState();
     await this.publishStoryDraftChapterUpto(dropdownValue);
-    await this.pollButtonStateForSeconds(publishChapterButton, 5000);
+    // await this.pollButtonStateForSeconds(publishChapterButton, 5000);
     await this.publishStoryDraftSerialChapter();
 
-    this.page.off('request', requestHandler);
-    this.page.off('response', responseHandler);
+    // this.page.off('request', requestHandler);
+    // this.page.off('response', responseHandler);
 
-    console.log(
-      '[DEBUG] Network log for publishChapter:',
-      JSON.stringify(networkLog, null, 2)
-    );
+    // console.log(
+    //   '[DEBUG] Network log for publishChapter:',
+    //   JSON.stringify(networkLog, null, 2)
+    // );
   }
 }
 export let TopicManagerFactory = (): TopicManager => new TopicManager();
