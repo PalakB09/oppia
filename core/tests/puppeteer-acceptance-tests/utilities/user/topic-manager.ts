@@ -4555,8 +4555,8 @@ export class TopicManager extends BaseUser {
       await this.page.waitForSelector(mobilePublishStoryButton);
       await this.clickOnElementWithSelector(mobilePublishStoryButton);
     } else {
-      // await this.waitForElementToBeClickable(publishChapterButton);
-      // await this.clickOnElementWithSelector(publishChapterButton);
+      await this.waitForElementToBeClickable(publishChapterButton);
+      await this.clickOnElementWithSelector(publishChapterButton);
       // const buttonDiagnostic = await this.page.evaluate((selector: string) => {
       //   const btn = document.querySelector(selector) as HTMLButtonElement;
       //   if (!btn) return {found: false};
@@ -4606,17 +4606,23 @@ export class TopicManager extends BaseUser {
       //   JSON.stringify(buttonDiagnostic, null, 2)
       // );
 
-      await this.page.waitForFunction(
-        (selector: string) => {
-          const btn = document.querySelector(selector) as HTMLButtonElement;
-          return btn && !btn.disabled;
-        },
-        {timeout: 15000}, // validation is fast, 15s is enough
-        publishChapterButton
-      );
-
-      const btn = await this.page.$(publishChapterButton);
-      await btn!.click();
+      // await this.page.waitForFunction(
+      //   (selector: string) => {
+      //     const btn = document.querySelector(selector) as HTMLButtonElement;
+      //     return btn && !btn.disabled;
+      //   },
+      //   {timeout: 15000}, // validation is fast, 15s is enough
+      //   publishChapterButton
+      // );
+      //  await this.page.waitForResponse(
+      //   res =>
+      //     res.url().includes('/story_editor_handler/data/') &&
+      //     res.request().method() === 'PUT' &&
+      //     res.status() === 200,
+      //   {timeout: 60000}
+      // );
+      // const btn = await this.page.$(publishChapterButton);
+      // await btn!.click();
 
       // Wait for publish HTTP call to complete.
       // Button stays disabled during PUT /story_publish_handler.
@@ -4629,13 +4635,6 @@ export class TopicManager extends BaseUser {
       //   {timeout: 60000}, // generous for slow CI
       //   publishChapterButton
       // );
-      await this.page.waitForResponse(
-        res =>
-          res.url().includes('/story_editor_handler/data/') &&
-          res.request().method() === 'PUT' &&
-          res.status() === 200,
-        {timeout: 60000}
-      );
     }
   }
 

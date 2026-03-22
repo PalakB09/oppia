@@ -181,7 +181,7 @@ describe('Logged-In Learner', function () {
         mobilePublishStoryButton
       );
     } else {
-      await curriculumAdmin.clickOnElementWithSelector(publishChapterButton);
+      await curriculumAdmin.publishStoryDraftSerialChapter();
     }
     await curriculumAdmin.expectScreenshotToMatch(
       'unpublishConfirmationPopup',
@@ -209,7 +209,8 @@ describe('Logged-In Learner', function () {
         mobilePublishStoryButton
       );
     } else {
-      await curriculumAdmin.clickOnElementWithSelector(publishChapterButton);
+      // await curriculumAdmin.clickOnElementWithSelector(publishChapterButton);
+      await curriculumAdmin.publishStoryDraftSerialChapter();
     }
     await curriculumAdmin.clickOnElementWithSelector(
       chapterConfirmAndUnpublishButton
